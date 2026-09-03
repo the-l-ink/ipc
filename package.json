@@ -1,6 +1,6 @@
 {
   "name": "@the-link/ipc",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Local process and socket IPC adapters for The Link.",
   "type": "module",
   "sideEffects": false,
@@ -10,12 +10,12 @@
       "default": "./dist/process.js"
     },
     "./socket-client": {
-      "types": "./dist/socket-client-entry.d.ts",
-      "default": "./dist/socket-client-entry.js"
+      "types": "./dist/socket-client.d.ts",
+      "default": "./dist/socket-client.js"
     },
     "./socket-server": {
-      "types": "./dist/socket-server-entry.d.ts",
-      "default": "./dist/socket-server-entry.js"
+      "types": "./dist/socket-server.d.ts",
+      "default": "./dist/socket-server.js"
     }
   },
   "files": ["dist", "LICENSE", "README.md"],

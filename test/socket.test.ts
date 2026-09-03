@@ -4,9 +4,9 @@ import { mkdtemp, rm, stat } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { TheLink } from "@the-link/core"
-import { SocketClient } from "../src/socket-client-entry.js"
+import { SocketClient } from "../src/socket-client.js"
 import { FrameReader } from "../src/framing.js"
-import { SocketServer } from "../src/socket-server-entry.js"
+import { SocketServer } from "../src/socket-server.js"
 
 const directories: string[] = []
 const servers: SocketServer[] = []
