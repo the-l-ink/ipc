@@ -4,13 +4,13 @@ import { mkdtemp, rm, stat } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { TheLink } from "@the-link/core"
-import { IpcClient } from "../src/client.js"
+import { SocketClient } from "../src/socket-client-entry.js"
 import { FrameReader } from "../src/framing.js"
-import { IpcServer } from "../src/server.js"
+import { SocketServer } from "../src/socket-server-entry.js"
 
 const directories: string[] = []
-const servers: IpcServer[] = []
-const clients: IpcClient[] = []
+const servers: SocketServer[] = []
+const clients: SocketClient[] = []
 
 afterEach(async () => {
 
@@ -19,7 +19,7 @@ afterEach(async () => {
     await Promise.all(directories.splice(0).map(directory => rm(directory, { recursive: true, force: true })))
 })
 
-describe("IPC adapter", () => {
+describe("Socket IPC adapters", () => {
 
     test("joins a Link and preserves publications in both directions", async () => {
 
@@ -61,7 +61,7 @@ describe("IPC adapter", () => {
     test("keeps accepted clients isolated", async () => {
 
         const address = await ipcAddress()
-        const server = keep(new IpcServer(address), servers)
+        const server = keep(new SocketServer(address), servers)
         let identity = 0
 
         server.onConnection(link => {
@@ -73,8 +73,8 @@ describe("IPC adapter", () => {
 
         await server.listen()
 
-        const first = keep(new IpcClient(address), clients)
-        const second = keep(new IpcClient(address), clients)
+        const first = keep(new SocketClient(address), clients)
+        const second = keep(new SocketClient(address), clients)
 
         await Promise.all([first.connect(), second.connect()])
 
@@ -89,8 +89,8 @@ describe("IPC adapter", () => {
     test("uses the serialization policy selected by the application", async () => {
 
         const address = await ipcAddress()
-        const server = keep(new IpcServer(address), servers)
-        const client = keep(new IpcClient(address), clients)
+        const server = keep(new SocketServer(address), servers)
+        const client = keep(new SocketClient(address), clients)
         let serialized = 0
         let deserialized = 0
         const encoder = new TextEncoder()
@@ -155,7 +155,7 @@ describe("IPC adapter", () => {
     test.skipIf(process.platform === "win32")("creates a private POSIX socket by default", async () => {
 
         const address = await ipcAddress()
-        const server = keep(new IpcServer(address), servers)
+        const server = keep(new SocketServer(address), servers)
 
         await server.listen()
 
@@ -163,10 +163,10 @@ describe("IPC adapter", () => {
     })
 })
 
-async function connected(accept: Parameters<IpcServer["onConnection"]>[0]) {
+async function connected(accept: Parameters<SocketServer["onConnection"]>[0]) {
 
     const address = await ipcAddress()
-    const server = keep(new IpcServer(address), servers)
+    const server = keep(new SocketServer(address), servers)
     let resolvePeer!: (peer: Parameters<typeof accept>[0]) => void
     const accepted = new Promise<Parameters<typeof accept>[0]>(resolve => { resolvePeer = resolve })
 
@@ -178,7 +178,7 @@ async function connected(accept: Parameters<IpcServer["onConnection"]>[0]) {
 
     await server.listen()
 
-    const client = keep(new IpcClient(address), clients)
+    const client = keep(new SocketClient(address), clients)
 
     await client.connect()
 

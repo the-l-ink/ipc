@@ -1,8 +1,6 @@
 # The Link IPC
 
-Local IPC adapter for The Link. It uses Unix domain sockets on POSIX systems
-and named pipes on Windows. Client and Server entry points remain isolated
-while both expose the same `TheLink` routing model.
+Local inter-process communication adapters for The Link.
 
 ## Install
 
@@ -10,30 +8,55 @@ while both expose the same `TheLink` routing model.
 npm install @the-link/ipc
 ```
 
-## Server
+## Process
+
+`ProcessLink` adapts an existing Node.js process IPC channel. The channel may
+come from `fork()` or from `spawn()` with an `ipc` standard-I/O entry.
 
 ```ts
-import { IpcServer } from "@the-link/ipc/server"
+import { spawn } from "node:child_process"
+import { ProcessLink } from "@the-link/ipc/process"
 
-const address = process.platform === "win32"
-  ? "\\\\.\\pipe\\application"
-  : "/tmp/application.sock"
+const child = spawn(process.execPath, ["worker.js"], {
+    serialization: "advanced",
+    stdio: ["inherit", "inherit", "inherit", "ipc"]
+})
 
-const server = new IpcServer(address)
+const link = new ProcessLink(child)
+```
+
+Inside the child, the current process is the default target:
+
+```ts
+import { ProcessLink } from "@the-link/ipc/process"
+
+const link = new ProcessLink()
+```
+
+`ProcessLink` uses the serialization policy selected when the channel was
+created. It does not create, terminate, or disconnect the process.
+
+## Socket
+
+The Socket adapters communicate through a Unix domain socket on POSIX systems
+or a named pipe on Windows.
+
+```ts
+import { SocketServer } from "@the-link/ipc/socket-server"
+
+const server = new SocketServer(address)
 
 server.onConnection(link => {
-  link.$inbound.subscribe("sum", (left: number, right: number) => left + right)
+    link.$inbound.subscribe("sum", (left: number, right: number) => left + right)
 })
 
 await server.listen()
 ```
 
-## Client
-
 ```ts
-import { IpcClient } from "@the-link/ipc/client"
+import { SocketClient } from "@the-link/ipc/socket-client"
 
-const client = new IpcClient(address)
+const client = new SocketClient(address)
 
 await client.connect()
 
@@ -42,39 +65,12 @@ const total = await client.$outbound.publishFirst<number>("sum", 20, 22)
 await client.disconnect()
 ```
 
-Publications are bidirectional and return the values produced by remote Link
-subscribers. A remote failure rejects the publication locally.
+Socket publications are bidirectional and carry remote results and failures.
+UTF-8 JSON bytes are used by default. Applications may replace the Socket
+serialization policy through `setSerialize()` and `setDeserialize()`.
 
-## Joining a Link
-
-The Server receives a private Link for every accepted connection. It can be
-joined to an application Link for the lifetime of that connection:
-
-```ts
-server.onConnection(link => link.autoJoin(application))
-```
-
-## Serialization
-
-Each side uses JSON encoded as UTF-8 bytes by default and allows its policy to
-be replaced:
-
-```ts
-client.setSerialize(serialize)
-client.setDeserialize(deserialize)
-
-server.setSerialize(serialize)
-server.setDeserialize(deserialize)
-```
-
-The adapter does not decide which serialization policy an application must use.
-
-## Addresses
-
-The application owns address selection. Pass a filesystem socket path on POSIX
-or a named-pipe path on Windows. POSIX sockets are restricted to mode `0600` by
-default; `mode` may be changed in the Server options. Windows named pipes are
-opened with `readableAll: false` and `writableAll: false`.
+POSIX sockets use mode `0600` by default. Applications remain responsible for
+selecting and managing their addresses.
 
 ## Development
 

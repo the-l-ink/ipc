@@ -12,8 +12,8 @@ interface Pending {
     reject(error: Error): void
 }
 
-/** One persistent Client half of a local IPC Link. */
-export class IpcClient extends TheLink {
+/** One persistent Client half of an addressable local IPC Link. */
+export class SocketClient extends TheLink {
 
     public readonly $internal = new Tunnel()
 
@@ -182,8 +182,8 @@ export class IpcClient extends TheLink {
 
     private publish(event: string, ...values: unknown[]) {
 
-        if (!this.socket || this.socket.destroyed) return Promise.reject(new Error("The IPC Client is not connected"))
-        if (this.pending.size >= this.maximumPending) return Promise.reject(new Error(`The IPC Client has ${this.maximumPending} pending publications`))
+        if (!this.socket || this.socket.destroyed) return Promise.reject(new Error("The Socket Client is not connected"))
+        if (this.pending.size >= this.maximumPending) return Promise.reject(new Error(`The Socket Client has ${this.maximumPending} pending publications`))
 
         const id = ++this.sequence
 
@@ -204,7 +204,7 @@ export class IpcClient extends TheLink {
 
         const socket = this.socket
 
-        if (!socket) return Promise.reject(new Error("The IPC Client is not connected"))
+        if (!socket) return Promise.reject(new Error("The Socket Client is not connected"))
 
         const write = this.writes.then(() => writeFrame(socket, this.serialize(envelope), this.maximumFrameSize))
 

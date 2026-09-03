@@ -9,7 +9,7 @@ interface Pending {
     reject(error: Error): void
 }
 
-/** Private Server-side Link for one accepted IPC connection. */
+/** Private Server-side Link for one accepted Socket connection. */
 export default class Peer extends TheLink {
 
     public readonly $internal = new Tunnel()

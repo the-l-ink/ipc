@@ -2,13 +2,13 @@ import { chmod } from "node:fs/promises"
 import { createServer, type Server } from "node:net"
 import { deserializeJSON, serializeJSON, TheLink, Tunnel, type Deserialize, type Serialize, type Subscriber } from "@the-link/core"
 import { limit } from "./framing.js"
-import Peer from "./server-peer.js"
+import Peer from "./socket-peer.js"
 
 const defaultMaximumFrameSize = 16 * 1024 * 1024
 const defaultMaximumPending = 1024
 
 /** Local IPC listener that presents each accepted peer as a private Link. */
-export class IpcServer extends TheLink {
+export class SocketServer extends TheLink {
 
     public readonly $internal = new Tunnel()
 
