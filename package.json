@@ -37,7 +37,7 @@
     "prepack": "node --run build"
   },
   "dependencies": {
-    "@the-link/core": "^0.2.0"
+    "@the-link/core": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

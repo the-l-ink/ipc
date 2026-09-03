@@ -1,8 +1,7 @@
 import { connect, type Socket } from "node:net"
-import { TheLink, Tunnel } from "@the-link/core"
+import { deserializeJSON, serializeJSON, TheLink, Tunnel, type Deserialize, type Serialize } from "@the-link/core"
 import { FrameReader, limit, writeFrame } from "./framing.js"
 import { describe, exception, parseEnvelope, type Envelope } from "./protocol.js"
-import { defaultDeserialize, defaultSerialize, type Deserialize, type Serialize } from "./codec.js"
 
 const defaultMaximumFrameSize = 16 * 1024 * 1024
 const defaultMaximumPending = 1024
@@ -18,8 +17,8 @@ export class IpcClient extends TheLink {
 
     public readonly $internal = new Tunnel()
 
-    private serialize: Serialize = defaultSerialize
-    private deserialize: Deserialize = defaultDeserialize
+    private serialize: Serialize = serializeJSON
+    private deserialize: Deserialize = deserializeJSON
     private readonly maximumFrameSize: number
     private readonly maximumPending: number
     private socket: Socket | null = null

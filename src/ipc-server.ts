@@ -1,8 +1,7 @@
 import { chmod } from "node:fs/promises"
 import { createServer, type Server } from "node:net"
-import { TheLink, Tunnel, type Subscriber } from "@the-link/core"
+import { deserializeJSON, serializeJSON, TheLink, Tunnel, type Deserialize, type Serialize, type Subscriber } from "@the-link/core"
 import { limit } from "./framing.js"
-import { defaultDeserialize, defaultSerialize, type Deserialize, type Serialize } from "./codec.js"
 import Peer from "./server-peer.js"
 
 const defaultMaximumFrameSize = 16 * 1024 * 1024
@@ -13,8 +12,8 @@ export class IpcServer extends TheLink {
 
     public readonly $internal = new Tunnel()
 
-    private serialize: Serialize = defaultSerialize
-    private deserialize: Deserialize = defaultDeserialize
+    private serialize: Serialize = serializeJSON
+    private deserialize: Deserialize = deserializeJSON
     private readonly maximumFrameSize: number
     private readonly maximumPending: number
     private readonly mode: number

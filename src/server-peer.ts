@@ -1,8 +1,7 @@
 import type { Socket } from "node:net"
-import { TheLink, Tunnel } from "@the-link/core"
+import { TheLink, Tunnel, type Deserialize, type Serialize } from "@the-link/core"
 import { FrameReader, writeFrame } from "./framing.js"
 import { describe, exception, parseEnvelope, type Envelope } from "./protocol.js"
-import type { Deserialize, Serialize } from "./codec.js"
 
 interface Pending {
 

@@ -5,7 +5,7 @@
     "": {
       "name": "@the-link/ipc",
       "dependencies": {
-        "@the-link/core": "^0.2.0",
+        "@the-link/core": "^0.3.0",
       },
       "devDependencies": {
         "@types/node": "^24.10.1",
@@ -14,7 +14,7 @@
     },
   },
   "packages": {
-    "@the-link/core": ["@the-link/core@0.2.0", "", { "dependencies": { "uuid": "^14.0.1" } }, "sha512-xUbgY24gn1id1uOM194PiWdgJMw8ApF/Ujjs8E7ENN9jEVJzriwGywF171WeFU7o3azj009HUjfvh7crafOGlA=="],
+    "@the-link/core": ["@the-link/core@0.3.0", "", { "dependencies": { "uuid": "^14.0.1" } }, "sha512-DmyPQQAyugdBVb63Ocrg/Vea+pzW8PgbJujHMVrVM6uh09gJOyZZdhGPBP8f8zO63eYOLElwffakKjJZ936FcQ=="],
 
     "@types/node": ["@types/node@24.13.3", "", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q=="],
 
