@@ -1,6 +1,6 @@
 {
   "name": "@the-link/ipc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local IPC adapter for The Link.",
   "type": "module",
   "sideEffects": false,
