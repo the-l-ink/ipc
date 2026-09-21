@@ -1,10 +1,14 @@
 {
   "name": "@the-link/ipc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Local process and socket IPC adapters for The Link.",
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./framing": {
+      "types": "./dist/framing.d.ts",
+      "default": "./dist/framing.js"
+    },
     "./process": {
       "types": "./dist/process.d.ts",
       "default": "./dist/process.js"
